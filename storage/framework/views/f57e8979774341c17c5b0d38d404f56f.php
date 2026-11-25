@@ -1,6 +1,7 @@
 <?php
     $site = \App\Support\Storefront::site();
     $tel  = \App\Support\Storefront::tel();
+    $student = auth()->check() && !auth()->user()->admin;
     $socialIcons = ['facebook' => 'bi-facebook', 'youtube' => 'bi-youtube', 'linkedin' => 'bi-linkedin', 'instagram' => 'bi-instagram'];
 
     // Header menu from Admin → Menus Setting ("Header Menus" location), with a sensible fallback
@@ -145,11 +146,29 @@
                 <?php endif; ?>
             <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
             <a href="<?php echo e(route('cart')); ?>"><i class="bi bi-bag"></i> My Cart</a>
+            <?php if($student): ?>
+                <a href="<?php echo e(route('customer.dashboard')); ?>"><i class="bi bi-person-circle"></i> My Courses</a>
+            <?php endif; ?>
         </nav>
-        <div class="mobile-nav__contact">
-            <?php if($site['phone']): ?><a href="tel:<?php echo e($tel); ?>"><i class="bi bi-telephone"></i> <?php echo e($site['phone']); ?></a><?php endif; ?>
-            <?php if($site['email']): ?><a href="mailto:<?php echo e($site['email']); ?>"><i class="bi bi-envelope"></i> <?php echo e($site['email']); ?></a><?php endif; ?>
-        </div>
+        <?php if($site['phone'] || $site['email']): ?>
+            <div class="mobile-nav__contact">
+                <p class="mobile-nav__contact-title">Need help choosing a course?</p>
+                <?php if($site['phone']): ?>
+                    <a href="tel:<?php echo e($tel); ?>" class="mobile-nav__contact-item">
+                        <span class="mobile-nav__contact-icon"><i class="bi bi-telephone-fill"></i></span>
+                        <span class="mobile-nav__contact-text"><small>Call us</small><strong><?php echo e($site['phone']); ?></strong></span>
+                        <i class="bi bi-chevron-right mobile-nav__contact-arrow"></i>
+                    </a>
+                <?php endif; ?>
+                <?php if($site['email']): ?>
+                    <a href="mailto:<?php echo e($site['email']); ?>" class="mobile-nav__contact-item">
+                        <span class="mobile-nav__contact-icon mobile-nav__contact-icon--mail"><i class="bi bi-envelope-fill"></i></span>
+                        <span class="mobile-nav__contact-text"><small>Email us</small><strong><?php echo e($site['email']); ?></strong></span>
+                        <i class="bi bi-chevron-right mobile-nav__contact-arrow"></i>
+                    </a>
+                <?php endif; ?>
+            </div>
+        <?php endif; ?>
     </div>
 </div>
 <?php /**PATH D:\xampp\htdocs\trainersbd\resources\views/frontend/partials/header.blade.php ENDPATH**/ ?>

@@ -425,6 +425,7 @@
                 name: data.get('name'), mobile: data.get('mobile'), email: data.get('email'),
                 payment_method: data.get('payment_method'), sender_number: data.get('sender_number'),
                 transaction_id: data.get('transaction_id'), note: data.get('note'),
+                password: data.get('password'),
                 items: Cart.read().map(function (i) { return i.id; })
             };
 
@@ -453,7 +454,8 @@
                 form.classList.add('was-validated');
                 var msgText = r.status === 429 ? 'Too many attempts. Please wait a minute and try again.'
                     : (Object.values(errors)[0] || ['Something went wrong. Please try again.'])[0];
-                toast('<i class="bi bi-exclamation-circle"></i><div><strong>Could not place order</strong><span>' + esc(msgText) + '</span></div>', 'warn');
+                var loginLink = r.body && r.body.login ? ' <a href="' + esc(r.body.login) + '?redirect=checkout">Log in now</a>' : '';
+                toast('<i class="bi bi-exclamation-circle"></i><div><strong>Could not place order</strong><span>' + esc(msgText) + loginLink + '</span></div>', 'warn');
                 if (first) { first.scrollIntoView({ behavior: 'smooth', block: 'center' }); }
             }).catch(function () {
                 btn.disabled = false;

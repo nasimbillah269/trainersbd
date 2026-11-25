@@ -2,6 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Frontend\SiteController;
+use App\Http\Controllers\Frontend\AccountController;
 use App\Http\Controllers\Welcome\WelcomeController;
 use App\Http\Controllers\Auth\AuthController;
 use App\Http\Controllers\Admin\PostsController;
@@ -41,8 +42,18 @@ Route::get('/image/{template?}/{image?}', [WelcomeController::class, 'imageView2
 Route::get('/product/{slug}', [SiteController::class, 'legacyProduct'])->name('productView');
 Route::get('/blog/category/{slug}', [SiteController::class, 'legacyHome'])->name('blogCategory');
 Route::get('/blog/{slug}', [SiteController::class, 'legacyHome'])->name('blogView');
-Route::get('/customer/dashboard', [SiteController::class, 'legacyHome'])->name('customer.dashboard');
 Route::get('/carts', [SiteController::class, 'legacyHome'])->name('carts');
+
+// Student account (accounts are created at checkout)
+Route::get('/account/login', [AccountController::class, 'login'])->name('customer.login');
+Route::post('/account/login', [AccountController::class, 'login'])->middleware('throttle:10,1')->name('customer.login.post');
+Route::middleware('auth')->group(function () {
+    Route::get('/customer/dashboard', [AccountController::class, 'dashboard'])->name('customer.dashboard');
+    Route::get('/my-courses/{slug}', [AccountController::class, 'learn'])->name('customer.learn');
+    Route::post('/customer/password', [AccountController::class, 'password'])->middleware('throttle:6,1')->name('customer.password');
+    Route::post('/account/logout', [AccountController::class, 'logout'])->name('customer.logout');
+});
+Route::redirect('/my-courses', '/customer/dashboard');
 
 // Admin authentication (students do not log in)
 Route::any('/admin-login', [AuthController::class, 'admin'])->name('admin');

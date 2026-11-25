@@ -1,0 +1,2 @@
+<?php echo $__env->make('errors.layout', ['code' => '404', 'title' => 'Page not found', 'message' => 'The page you are looking for does not exist or has been moved.', 'icon' => 'bi-compass'], \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?>
+<?php /**PATH D:\xampp\htdocs\trainersbd\resources\views/errors/404.blade.php ENDPATH**/ ?>

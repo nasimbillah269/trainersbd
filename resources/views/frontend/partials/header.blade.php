@@ -1,6 +1,7 @@
 @php
     $site = \App\Support\Storefront::site();
     $tel  = \App\Support\Storefront::tel();
+    $student = auth()->check() && !auth()->user()->admin;
     $socialIcons = ['facebook' => 'bi-facebook', 'youtube' => 'bi-youtube', 'linkedin' => 'bi-linkedin', 'instagram' => 'bi-instagram'];
 
     // Header menu from Admin → Menus Setting ("Header Menus" location), with a sensible fallback
@@ -145,10 +146,28 @@
                 @endif
             @endforeach
             <a href="{{ route('cart') }}"><i class="bi bi-bag"></i> My Cart</a>
+            @if($student)
+                <a href="{{ route('customer.dashboard') }}"><i class="bi bi-person-circle"></i> My Courses</a>
+            @endif
         </nav>
-        <div class="mobile-nav__contact">
-            @if($site['phone'])<a href="tel:{{ $tel }}"><i class="bi bi-telephone"></i> {{ $site['phone'] }}</a>@endif
-            @if($site['email'])<a href="mailto:{{ $site['email'] }}"><i class="bi bi-envelope"></i> {{ $site['email'] }}</a>@endif
-        </div>
+        @if($site['phone'] || $site['email'])
+            <div class="mobile-nav__contact">
+                <p class="mobile-nav__contact-title">Need help choosing a course?</p>
+                @if($site['phone'])
+                    <a href="tel:{{ $tel }}" class="mobile-nav__contact-item">
+                        <span class="mobile-nav__contact-icon"><i class="bi bi-telephone-fill"></i></span>
+                        <span class="mobile-nav__contact-text"><small>Call us</small><strong>{{ $site['phone'] }}</strong></span>
+                        <i class="bi bi-chevron-right mobile-nav__contact-arrow"></i>
+                    </a>
+                @endif
+                @if($site['email'])
+                    <a href="mailto:{{ $site['email'] }}" class="mobile-nav__contact-item">
+                        <span class="mobile-nav__contact-icon mobile-nav__contact-icon--mail"><i class="bi bi-envelope-fill"></i></span>
+                        <span class="mobile-nav__contact-text"><small>Email us</small><strong>{{ $site['email'] }}</strong></span>
+                        <i class="bi bi-chevron-right mobile-nav__contact-arrow"></i>
+                    </a>
+                @endif
+            </div>
+        @endif
     </div>
 </div>

@@ -7,9 +7,12 @@ use App\Models\Attribute;
 use App\Models\Course;
 use App\Models\CourseOrder;
 use App\Models\CourseReview;
+use App\Models\User;
 use App\Support\Storefront;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 
 class SiteController extends Controller
@@ -99,7 +102,7 @@ class SiteController extends Controller
 
     public function checkout()
     {
-        return view('frontend.checkout', ['paymentMethods' => Storefront::paymentMethods()]);
+        return view('frontend.checkout', ['paymentMethods' => Storefront::paymentMethods(), 'customer' => $this->checkoutCustomer()]);
     }
 
     public function placeOrder(Request $r)
@@ -116,6 +119,7 @@ class SiteController extends Controller
             'note'           => 'nullable|string|max:500',
             'items'          => 'required|array|min:1|max:50',
             'items.*'        => 'integer',
+            'password'       => $this->checkoutCustomer() ? 'nullable' : 'required|string|min:6|max:100',
         ], [
             'mobile.regex' => 'Please enter a valid Bangladeshi mobile number.',
             'items.required' => 'Your cart is empty.',
@@ -130,17 +134,44 @@ class SiteController extends Controller
             return response()->json(['success' => false, 'errors' => ['items' => ['These courses are no longer available.']]], 422);
         }
 
+        // Guests get a student account so they can see their courses later; it must not already exist
+        $customer = $this->checkoutCustomer();
+        $mobile = AccountController::normalizeMobile($r->mobile);
+        $email = strtolower(trim($r->email));
+        if (!$customer) {
+            $taken = [];
+            if (User::where('mobile', $mobile)->exists()) {
+                $taken['mobile'] = ['An account with this mobile number already exists. Please log in first.'];
+            }
+            if (User::where('email', $email)->exists()) {
+                $taken['email'] = ['An account with this email already exists. Please log in first.'];
+            }
+            if ($taken) {
+                return response()->json(['success' => false, 'login' => route('customer.login'), 'errors' => $taken], 422);
+            }
+        }
+
         $trx = strtoupper(trim((string) $r->transaction_id));
         if ($trx !== '' && CourseOrder::where('transaction_id', $trx)->where('status', '!=', 'cancelled')->exists()) {
             return response()->json(['success' => false, 'errors' => ['transaction_id' => ['This transaction ID has already been used for another order.']]], 422);
         }
 
-        $order = DB::transaction(function () use ($r, $courses, $trx) {
+        $order = DB::transaction(function () use ($r, $courses, $trx, &$customer, $mobile, $email) {
+            if (!$customer) {
+                $customer = User::create([
+                    'name'     => trim($r->name),
+                    'email'    => $email,
+                    'password' => Hash::make($r->password),
+                ]);
+                $customer->forceFill(['mobile' => $mobile, 'customer' => true, 'admin' => false, 'status' => 1, 'country' => 1])->save();
+            }
+
             $subtotal = $courses->sum(fn ($c) => max($c->old_price, $c->price));
             $total = $courses->sum('price');
 
             $order = CourseOrder::create([
                 'invoice'        => 'TMP' . uniqid(),
+                'user_id'        => $customer->id,
                 'name'           => trim($r->name),
                 'mobile'         => trim($r->mobile),
                 'email'          => strtolower(trim($r->email)),
@@ -162,6 +193,10 @@ class SiteController extends Controller
             return $order;
         });
 
+        if (!Auth::check()) {
+            Auth::login($customer);
+        }
+
         return response()->json([
             'success'  => true,
             'redirect' => \Illuminate\Support\Facades\URL::signedRoute('order.success', ['invoice' => $order->invoice]),
@@ -174,6 +209,13 @@ class SiteController extends Controller
                 'trx'     => $order->transaction_id,
             ],
         ]);
+    }
+
+    /** The logged-in student placing an order (admins ordering for testing are treated as guests). */
+    protected function checkoutCustomer(): ?User
+    {
+        $user = Auth::user();
+        return $user && !$user->admin ? $user : null;
     }
 
     /** Thank-you page after checkout (signed URL, so only the buyer has the link). */

@@ -1,0 +1,2 @@
+<?php echo $__env->make('errors.layout', ['code' => '500', 'title' => 'Server error', 'message' => 'Something went wrong on our end. Please try again shortly.', 'icon' => 'bi-tools'], \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?>
+<?php /**PATH D:\xampp\htdocs\trainersbd\resources\views/errors/500.blade.php ENDPATH**/ ?>

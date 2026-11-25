@@ -32,31 +32,47 @@
                         <span class="checkout-block__num">1</span>
                         <div>
                             <h2 class="panel__title">Your information</h2>
-                            <p>No account needed. We'll use these details to contact you about your enrollment.</p>
+                            @if($customer)
+                                <p>Logged in as <strong>{{ $customer->name }}</strong>. This course will be added to <a href="{{ route('customer.dashboard') }}">My Courses</a>.</p>
+                            @else
+                                <p>We'll create your student account with these details so you can open your courses anytime. Already have an account? <a href="{{ route('customer.login') }}?redirect=checkout">Log in</a></p>
+                            @endif
                         </div>
                     </div>
                     <div class="row g-3">
                         <div class="col-12">
                             <label class="form-label" for="ckName">Full name <span class="req">*</span></label>
                             <div class="input-icon"><i class="bi bi-person"></i>
-                                <input type="text" class="form-control" id="ckName" name="name" placeholder="e.g. Mahmudul Islam" required maxlength="100" autocomplete="name">
+                                <input type="text" class="form-control" id="ckName" name="name" value="{{ $customer->name ?? '' }}" placeholder="e.g. Mahmudul Islam" required maxlength="100" autocomplete="name">
                             </div>
                             <div class="invalid-feedback">Please enter your full name.</div>
                         </div>
                         <div class="col-md-6">
                             <label class="form-label" for="ckMobile">Mobile number <span class="req">*</span></label>
                             <div class="input-icon"><i class="bi bi-phone"></i>
-                                <input type="tel" class="form-control" id="ckMobile" name="mobile" placeholder="01XXXXXXXXX" required pattern="^(\+?88)?01[3-9][0-9]{8}$" autocomplete="tel">
+                                <input type="tel" class="form-control" id="ckMobile" name="mobile" value="{{ $customer->mobile ?? '' }}" placeholder="01XXXXXXXXX" required pattern="^(\+?88)?01[3-9][0-9]{8}$" autocomplete="tel">
                             </div>
                             <div class="invalid-feedback">Enter a valid Bangladeshi mobile number (01XXXXXXXXX).</div>
                         </div>
                         <div class="col-md-6">
                             <label class="form-label" for="ckEmail">Email address <span class="req">*</span></label>
                             <div class="input-icon"><i class="bi bi-envelope"></i>
-                                <input type="email" class="form-control" id="ckEmail" name="email" placeholder="you@example.com" required autocomplete="email">
+                                <input type="email" class="form-control" id="ckEmail" name="email" value="{{ $customer->email ?? '' }}" placeholder="you@example.com" required autocomplete="email">
                             </div>
                             <div class="invalid-feedback">Please enter a valid email address.</div>
                         </div>
+                        @unless($customer)
+                            <div class="col-md-6">
+                                <label class="form-label" for="ckPassword">Create a password <span class="req">*</span></label>
+                                <div class="input-icon"><i class="bi bi-key"></i>
+                                    <input type="password" class="form-control" id="ckPassword" name="password" placeholder="At least 6 characters" required minlength="6" maxlength="100" autocomplete="new-password">
+                                </div>
+                                <div class="invalid-feedback">Password must be at least 6 characters.</div>
+                            </div>
+                            <div class="col-md-6 d-flex align-items-end">
+                                <p class="form-text mb-2"><i class="bi bi-shield-check"></i> Log in later with your mobile number and this password to see your courses.</p>
+                            </div>
+                        @endunless
                     </div>
                 </div>
 

@@ -156,7 +156,11 @@
         </div>
 
         <div class="success-actions">
-            <a href="{{ route('courses.index') }}" class="btn btn-primary btn-lg">Browse more courses <i class="bi bi-arrow-right"></i></a>
+            @php($mine = $order->user_id && auth()->id() === $order->user_id)
+            @if($mine)
+                <a href="{{ route('customer.dashboard') }}" class="btn btn-primary btn-lg"><i class="bi bi-person-circle"></i> Go to My Courses</a>
+            @endif
+            <a href="{{ route('courses.index') }}" class="btn {{ $mine ? 'btn-outline-dark' : 'btn-primary' }} btn-lg">Browse more courses <i class="bi bi-arrow-right"></i></a>
             <a href="{{ route('courses.free') }}" class="btn btn-outline-dark btn-lg"><i class="bi bi-youtube"></i> Watch free courses</a>
         </div>
     </div>
