@@ -59,7 +59,7 @@
             ]],
             ['group' => 'Reports Management', 'icon' => 'fa-solid fa-chart-line', 'items' => [
                 ['Summary Reports', route('admin.reportsAll', 'summery'), $is('admin/reports/summery'), $can('reports', 'summery')],
-                ['Products Reports', route('admin.reportsAll', 'products'), $is('admin/reports/products'), $can('reports', 'products')],
+                ['Course Reports', route('admin.reportsAll', 'products'), $is('admin/reports/products'), $can('reports', 'products')],
                 ['Customer Reports', route('admin.reportsAll', 'customer-reports'), $is('admin/reports/customer-reports'), $can('reports', 'customer')],
                 ['Order Reports', route('admin.reportsAll', 'order-reports'), $is('admin/reports/order-reports'), $can('reports', 'orders')],
             ]],

@@ -21,7 +21,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Hind+Siliguri:wght@400;500;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
-    <link rel="stylesheet" href="<?php echo e(asset('frontend/css/app.css')); ?>?v=18">
+    <link rel="stylesheet" href="<?php echo e(asset('frontend/css/app.css')); ?>?v=21">
     <?php echo $__env->yieldPushContent('css'); ?>
 </head>
 <body class="<?php echo $__env->yieldContent('body_class'); ?>">

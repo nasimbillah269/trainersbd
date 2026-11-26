@@ -30,7 +30,7 @@
     <script src="<?php echo e(asset(assetLinkAdmin() . '/app-assets/js/JsBarcode.all.js')); ?>"></script>
 
     
-    <link rel="stylesheet" href="<?php echo e(asset(assetLinkAdmin() . '/app-assets/css/premium.css')); ?>?v=4">
+    <link rel="stylesheet" href="<?php echo e(asset(assetLinkAdmin() . '/app-assets/css/premium.css')); ?>?v=5">
     <?php echo $__env->yieldPushContent('css'); ?>
 </head>
 <body class="adm">
@@ -91,6 +91,18 @@
                 if (confirmBtn && !window.confirm(confirmBtn.getAttribute('data-confirm'))) { e.preventDefault(); e.stopImmediatePropagation(); }
             }, true);
             try { if (localStorage.getItem('admCollapsed') === '1' && window.innerWidth >= 1200) { body.classList.add('adm-collapsed'); } } catch (err) {}
+            // Legacy list pages: highlight the status filter (All / Active / Inactive …) that matches the current URL
+            document.querySelectorAll('.statuslist').forEach(function (list) {
+                var links = list.querySelectorAll('a'), cur = new URL(location.href), hit = null;
+                links.forEach(function (a) {
+                    var u = new URL(a.href, location.href);
+                    if (u.pathname !== cur.pathname) { return; }
+                    var match = true;
+                    u.searchParams.forEach(function (v, k) { if (cur.searchParams.get(k) !== v) { match = false; } });
+                    if (match && (!hit || u.searchParams.toString().length > new URL(hit.href).searchParams.toString().length)) { hit = a; }
+                });
+                if (hit) { hit.classList.add('is-active'); }
+            });
             setTimeout(function () {
                 document.querySelectorAll('.adm-toast--success, .adm-toast--info').forEach(function (t) { t.classList.add('is-hiding'); setTimeout(function () { t.remove(); }, 400); });
             }, 5000);

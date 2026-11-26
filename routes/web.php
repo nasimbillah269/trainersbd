@@ -12,6 +12,7 @@ use App\Http\Controllers\Admin\OrdersController;
 use App\Http\Controllers\Admin\EcommerceController;
 use App\Http\Controllers\Admin\CourseAdminController;
 use App\Http\Controllers\Admin\CourseOrderController;
+use App\Http\Controllers\Admin\CourseReportController;
 
 /*
 |--------------------------------------------------------------------------
@@ -190,7 +191,7 @@ Route::any('/accounts/method/{action?}/{id?}',[AdminController::class,'accountsM
 
 
 // Reports Route Start
-Route::get('/reports/{type}',[AdminController::class,'reportsAll'])->name('reportsAll');
+Route::get('/reports/{type}',[CourseReportController::class,'show'])->name('reportsAll');
 // Reports Route End
 
 // Clients Route

@@ -839,6 +839,7 @@ img { max-width: 100%; }
 .listing .page-link { border-radius: 10px !important; border: 1px solid var(--line); color: var(--ink-2); min-width: 40px; height: 40px; display: grid; place-items: center; font-weight: 600; }
 .listing .page-item.active .page-link { background: var(--ink); border-color: var(--ink); color: #fff; }
 .filters-btn { display: none; }
+.filters-drawer__head, .filters-backdrop { display: none; }
 
 /* ---------- CMS page ---------- */
 .page-hero { position: relative; overflow: hidden; background: var(--night); color: #B9C0D4; padding: 2.5rem 0 4rem; }
@@ -875,9 +876,17 @@ img { max-width: 100%; }
 }
 @media (max-width: 991.98px) {
     .filters { position: static; }
-    .filters-col { display: none; }
-    .filters-col.is-open { display: block; }
     .filters-btn { display: inline-flex; }
+    /* Filters drawer (slides in from the left) */
+    .filters-col { position: fixed; top: 0; bottom: 0; left: 0; z-index: 1060; width: min(340px, 86vw) !important; max-width: none; margin: 0 !important; padding: 0 1rem 1.5rem !important; background: var(--tint); overflow-y: auto; overscroll-behavior: contain; box-shadow: var(--shadow-lg); transform: translateX(-105%); visibility: hidden; transition: transform .3s ease, visibility 0s linear .3s; }
+    .filters-col.is-open { transform: none; visibility: visible; transition: transform .3s ease, visibility 0s; }
+    .filters-drawer__head { position: sticky; top: 0; z-index: 2; display: flex; align-items: center; justify-content: space-between; margin: 0 -1rem 1rem; padding: .95rem 1rem; background: #fff; border-bottom: 1px solid var(--line); }
+    .filters-drawer__head strong { display: inline-flex; align-items: center; gap: .5rem; color: var(--ink); font-size: 1rem; }
+    .filters-drawer__close { display: grid; place-items: center; width: 36px; height: 36px; border: 1px solid var(--line); border-radius: 10px; background: #fff; color: var(--ink); }
+    .filters-drawer__close:hover { background: var(--tint); }
+    .filters-backdrop { display: block; position: fixed; inset: 0; z-index: 1055; background: rgba(11, 19, 36, .5); opacity: 0; visibility: hidden; transition: opacity .3s, visibility 0s linear .3s; padding: 0 !important; margin: 0 !important; width: auto !important; }
+    .filters-open .filters-backdrop { opacity: 1; visibility: visible; transition: opacity .3s, visibility 0s; }
+    body.filters-open { overflow: hidden; }
     .page-card { padding: 1.5rem; }
 }
 @media (max-width: 575.98px) {
@@ -1231,4 +1240,33 @@ img.lazy.is-loaded { opacity: 1; }
     .account-stat { padding: .85rem 1rem; }
     .account-stat > i { width: 40px; height: 40px; font-size: 1.1rem; }
     .account-stat strong { font-size: 1.2rem; }
+}
+
+/* Topbar on phones: phone, email and social icons in one compact row */
+@media (max-width: 767.98px) {
+    .topbar { font-size: .74rem; }
+    .topbar__inner { min-height: 38px; gap: .5rem; }
+    .topbar__info { gap: .15rem; min-width: 0; flex: 1 1 auto; }
+    .topbar__chip { gap: .35rem; padding: .2rem .45rem .2rem .2rem; min-width: 0; }
+    .topbar__chip span:last-child { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .topbar__icon { width: 22px; height: 22px; font-size: .62rem; flex-shrink: 0; }
+    .topbar__social { gap: .35rem; padding-left: 1.1rem; flex-shrink: 0; }
+    .topbar__soc { width: 26px; height: 26px; font-size: .74rem; }
+}
+/* Narrow phones: smaller text and icons so phone number and email both stay readable */
+@media (max-width: 499.98px) {
+    .topbar { font-size: .66rem; letter-spacing: -.01em; }
+    .topbar__inner { gap: .35rem; padding-left: .6rem; padding-right: .6rem; }
+    .topbar__info { gap: .1rem; }
+    .topbar__chip { gap: .25rem; padding: .2rem .3rem .2rem 0; letter-spacing: 0; }
+    .topbar__icon { width: 18px; height: 18px; font-size: .52rem; }
+    .topbar__social { gap: .25rem; padding-left: .85rem; }
+    .topbar__soc { width: 22px; height: 22px; font-size: .64rem; }
+}
+@media (max-width: 374.98px) {
+    .topbar__icon { display: none; }
+    .topbar__chip { padding-left: .15rem; }
+}
+@media (max-width: 339.98px) {
+    .topbar { font-size: .6rem; }
 }

@@ -66,7 +66,11 @@
     <div class="container">
         <div class="row g-4">
             
-            <aside class="col-lg-3 filters-col" id="filtersCol">
+            <aside class="col-lg-3 filters-col" id="filtersCol" aria-label="Course filters">
+                <div class="filters-drawer__head">
+                    <strong><i class="bi bi-sliders"></i> Filters</strong>
+                    <button type="button" class="filters-drawer__close" data-filters-close aria-label="Close filters"><i class="bi bi-x-lg"></i></button>
+                </div>
                 <form class="filters" action="<?php echo e($action); ?>" method="get" data-filter-form>
                     <?php if($q): ?><input type="hidden" name="q" value="<?php echo e($q); ?>"><?php endif; ?>
                     <?php if($sort !== 'popular'): ?><input type="hidden" name="sort" value="<?php echo e($sort); ?>"><?php endif; ?>
@@ -120,6 +124,7 @@
                     <?php endif; ?>
                 </form>
             </aside>
+            <div class="filters-backdrop" data-filters-close></div>
 
             
             <div class="col-lg-9">
@@ -189,8 +194,23 @@
         el.addEventListener(el.tagName === 'FORM' ? 'submit' : 'click', showListingSkeleton);
     });
     window.addEventListener('pageshow', function (e) { if (e.persisted) { location.reload(); } });
-    var ft = document.querySelector('[data-filters-toggle]');
-    if (ft) { ft.addEventListener('click', function () { document.getElementById('filtersCol').classList.toggle('is-open'); }); }
+    // Mobile: filters slide in as a drawer from the left
+    (function () {
+        var col = document.getElementById('filtersCol'), ft = document.querySelector('[data-filters-toggle]');
+        if (!col || !ft) { return; }
+        function setOpen(open) {
+            col.classList.toggle('is-open', open);
+            document.body.classList.toggle('filters-open', open);
+            ft.setAttribute('aria-expanded', open ? 'true' : 'false');
+            if (open) { var c = col.querySelector('[data-filters-close]'); if (c) { c.focus({ preventScroll: true }); } }
+        }
+        ft.setAttribute('aria-controls', 'filtersCol');
+        ft.setAttribute('aria-expanded', 'false');
+        ft.addEventListener('click', function () { setOpen(!col.classList.contains('is-open')); });
+        document.querySelectorAll('[data-filters-close]').forEach(function (el) { el.addEventListener('click', function () { setOpen(false); ft.focus({ preventScroll: true }); }); });
+        document.addEventListener('keydown', function (e) { if (e.key === 'Escape' && col.classList.contains('is-open')) { setOpen(false); ft.focus({ preventScroll: true }); } });
+        window.matchMedia('(min-width: 992px)').addEventListener('change', function (m) { if (m.matches) { setOpen(false); } });
+    })();
 </script>
 <?php $__env->stopPush(); ?>
 

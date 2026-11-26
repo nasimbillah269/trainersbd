@@ -14,14 +14,14 @@
         ];
     }
 @endphp
-<div class="topbar d-none d-md-block">
+<div class="topbar">
     <div class="container topbar__inner">
         <div class="topbar__info">
             @if($site['phone'])
                 <a href="tel:{{ $tel }}" class="topbar__chip"><span class="topbar__icon"><i class="bi bi-telephone-fill"></i></span><span>{{ $site['phone'] }}</span></a>
             @endif
             @if($site['email'])
-                <a href="mailto:{{ $site['email'] }}" class="topbar__chip"><span class="topbar__icon"><i class="bi bi-envelope-fill"></i></span><span>{{ $site['email'] }}</span></a>
+                <a href="mailto:{{ $site['email'] }}" class="topbar__chip topbar__chip--email" title="{{ $site['email'] }}"><span class="topbar__icon"><i class="bi bi-envelope-fill"></i></span><span>{{ $site['email'] }}</span></a>
             @endif
         </div>
 
@@ -33,7 +33,7 @@
 
         @if($site['social'])
             <div class="topbar__social">
-                <span class="topbar__follow">Follow us</span>
+                <span class="topbar__follow d-none d-sm-inline">Follow us</span>
                 @foreach($site['social'] as $net => $link)
                     <a href="{{ $link }}" class="topbar__soc topbar__soc--{{ $net }}" aria-label="{{ ucfirst($net) }}" title="{{ ucfirst($net) }}" target="_blank" rel="noopener"><i class="bi {{ $socialIcons[$net] }}"></i></a>
                 @endforeach

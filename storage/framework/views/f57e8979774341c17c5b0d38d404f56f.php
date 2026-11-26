@@ -14,14 +14,14 @@
         ];
     }
 ?>
-<div class="topbar d-none d-md-block">
+<div class="topbar">
     <div class="container topbar__inner">
         <div class="topbar__info">
             <?php if($site['phone']): ?>
                 <a href="tel:<?php echo e($tel); ?>" class="topbar__chip"><span class="topbar__icon"><i class="bi bi-telephone-fill"></i></span><span><?php echo e($site['phone']); ?></span></a>
             <?php endif; ?>
             <?php if($site['email']): ?>
-                <a href="mailto:<?php echo e($site['email']); ?>" class="topbar__chip"><span class="topbar__icon"><i class="bi bi-envelope-fill"></i></span><span><?php echo e($site['email']); ?></span></a>
+                <a href="mailto:<?php echo e($site['email']); ?>" class="topbar__chip topbar__chip--email" title="<?php echo e($site['email']); ?>"><span class="topbar__icon"><i class="bi bi-envelope-fill"></i></span><span><?php echo e($site['email']); ?></span></a>
             <?php endif; ?>
         </div>
 
@@ -33,7 +33,7 @@
 
         <?php if($site['social']): ?>
             <div class="topbar__social">
-                <span class="topbar__follow">Follow us</span>
+                <span class="topbar__follow d-none d-sm-inline">Follow us</span>
                 <?php $__currentLoopData = $site['social']; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $net => $link): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
                     <a href="<?php echo e($link); ?>" class="topbar__soc topbar__soc--<?php echo e($net); ?>" aria-label="<?php echo e(ucfirst($net)); ?>" title="<?php echo e(ucfirst($net)); ?>" target="_blank" rel="noopener"><i class="bi <?php echo e($socialIcons[$net]); ?>"></i></a>
                 <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
